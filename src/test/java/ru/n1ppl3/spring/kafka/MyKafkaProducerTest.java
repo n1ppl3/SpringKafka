@@ -7,10 +7,19 @@ import org.junit.jupiter.api.Test;
 
 class MyKafkaProducerTest {
 
+	@Test
+	void syncSendTest() {
+		MyKafkaProducer.syncSend("my-topic");
+	}
 
 	@Test
-	void sendTest() throws IOException {
-		MyKafkaProducer.send("my-topic");
+	void asyncSyncSendTest() {
+		MyKafkaProducer.asyncSyncSend("my-topic");
+	}
+
+	@Test
+	void asyncSendTest() {
+		MyKafkaProducer.asyncSend("my-topic");
 	}
 
 }
