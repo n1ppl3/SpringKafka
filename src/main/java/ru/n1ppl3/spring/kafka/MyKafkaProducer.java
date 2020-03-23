@@ -30,7 +30,7 @@ public class MyKafkaProducer {
 		List<Future<RecordMetadata>> futures = new ArrayList<>();
 		try {
 			for (int i=0; i < 100; i++) {
-				ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(topicName, Integer.toString(i), Integer.toString(i));
+				ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topicName, Integer.toString(i), Integer.toString(i));
 				Future<RecordMetadata> result = producer.send(producerRecord);
 				futures.add(result);
 				logger.info("{}: {}", i, result);
