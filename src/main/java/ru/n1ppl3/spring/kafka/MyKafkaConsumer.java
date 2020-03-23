@@ -39,21 +39,21 @@ public class MyKafkaConsumer {
 	}
 
 
-	private static void consumerWork(KafkaConsumer<String, String> consumer, String... topics) throws InterruptedException {
+	private static void consumerWork(KafkaConsumer<String, String> consumer, String... topics) {
 		consumer.subscribe(Arrays.asList(topics), new MyListener());
 		
 		while (true) {
 			ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
 			for (ConsumerRecord<String, String> record : records) {
-				logger.info("offset = {}, key = {}, value = {}", record.offset(), record.key(), record.value());
+				logger.info("topic={}, partition={}, offset = {}, key = {}, value = {}", record.topic(), record.partition(), record.offset(), record.key(), record.value());
 			}
 			
 			Set<TopicPartition> assigned = consumer.assignment();
-			logger.info("ASSIGNED: {}", assigned);
+			logger.info("ASSIGNED:  {}", assigned);
 			
-			logger.info("BEGIN:    {}", consumer.beginningOffsets(assigned));
-			logger.info("END:      {}", consumer.endOffsets(assigned));
-			logger.info("COMMITED: {}", consumer.committed(assigned));
+			logger.info("BEGIN:     {}", consumer.beginningOffsets(assigned));
+			logger.info("END:       {}", consumer.endOffsets(assigned));
+			logger.info("COMMITTED: {}", consumer.committed(assigned));
 		}
 	}
 
