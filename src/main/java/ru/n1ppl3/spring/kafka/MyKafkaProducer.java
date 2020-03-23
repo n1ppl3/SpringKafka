@@ -35,8 +35,9 @@ public class MyKafkaProducer {
 	public static void syncSend(String topicName) {
 		try (Producer<String, String> producer = myProducer()) {
 			for (int i=0; i < REPEATS; i++) {
-				ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topicName, Integer.toString(i), Integer.toString(i));
-				Future<RecordMetadata> result = producer.send(producerRecord);
+				String key = Integer.toString(i);
+				String value = Integer.toString(i);
+				Future<RecordMetadata> result = producer.send(new ProducerRecord<>(topicName, key, value));
 				safeGet(result);
 			}
 		}
