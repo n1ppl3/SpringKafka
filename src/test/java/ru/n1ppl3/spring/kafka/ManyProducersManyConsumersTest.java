@@ -22,14 +22,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static ru.n1ppl3.spring.kafka.ExecUtils.executeParallelTasks;
+import static ru.n1ppl3.utils.CollectionUtils.sortedList;
 
 /**
  * если консумеров в одной группе больше, чем партиций, то они все работают, но "лишние" получают 0 записей
@@ -56,7 +55,7 @@ class ManyProducersManyConsumersTest {
         String topicName = generateTopicName();
         startProducers(1, topicName);
         List<Integer> consumeResults = startConsumers(2, topicName);
-        Assertions.assertEquals(new TreeSet<>(asList(0, 10)), new TreeSet<>(consumeResults));
+        Assertions.assertEquals(sortedList(0, 10), sortedList(consumeResults));
     }
 
 
@@ -76,7 +75,7 @@ class ManyProducersManyConsumersTest {
         TestUtils.ensureTopics(KAFKA_BROKER_ADDR, new NewTopic(topicName, 2, (short) 1));
         startProducers(1, topicName);
         List<Integer> consumeResults = startConsumers(2, topicName);
-        Assertions.assertEquals(new TreeSet<>(asList(4, 6)), new TreeSet<>(consumeResults));
+        Assertions.assertEquals(sortedList(4, 6), sortedList(consumeResults));
     }
 
 
