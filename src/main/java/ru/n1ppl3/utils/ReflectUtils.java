@@ -1,4 +1,4 @@
-package ru.n1ppl3.spring.kafka;
+package ru.n1ppl3.utils;
 
 import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;

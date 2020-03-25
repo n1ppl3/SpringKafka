@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.Collections.singletonMap;
-import static ru.n1ppl3.spring.kafka.ReflectUtils.getObjectFieldValue;
+import static ru.n1ppl3.utils.ReflectUtils.getObjectFieldValue;
 
 
 @Slf4j
