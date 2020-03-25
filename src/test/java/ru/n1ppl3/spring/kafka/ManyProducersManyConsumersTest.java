@@ -27,8 +27,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static java.util.Collections.singletonList;
-import static ru.n1ppl3.spring.kafka.ExecUtils.executeParallelTasks;
 import static ru.n1ppl3.utils.CollectionUtils.sortedList;
+import static ru.n1ppl3.utils.ExecUtils.executeParallelTasks;
 
 /**
  * если консумеров в одной группе больше, чем партиций, то они все работают, но "лишние" получают 0 записей
