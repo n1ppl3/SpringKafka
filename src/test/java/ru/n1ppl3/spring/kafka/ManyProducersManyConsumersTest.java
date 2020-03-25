@@ -106,6 +106,7 @@ class ManyProducersManyConsumersTest {
             logger.info("{} sent message #{} and received {} from broker", producerName, i, result.get());
             Thread.sleep(500);
         }
+        producer.close();
         return messagesCount;
     }
 
@@ -143,13 +144,15 @@ class ManyProducersManyConsumersTest {
             Thread.sleep(1000);
         }
 
+        consumer.close();
+
         return records.count();
     }
 
-    private static String getGroupId() {
-        return "test";
-    }
 
+    private static String getGroupId() {
+        return "my-group-" + LocalDateTime.now().withNano(0).format(FORMATTER);
+    }
 
     private static String generateTopicName() {
         return "myTopic" + LocalDateTime.now().withNano(0).format(FORMATTER);
