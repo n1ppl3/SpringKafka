@@ -48,7 +48,7 @@ public class PlainJavaSpringExample {
         container.setBeanName("testAuto");
         container.start();
 
-        Thread.sleep(1000); // wait a bit for the container to start
+        Thread.sleep(1_000); // wait a bit for the container to start
 
         KafkaTemplate<Integer, String> template = createTemplate();
         template.setDefaultTopic("topic1");
@@ -72,7 +72,7 @@ public class PlainJavaSpringExample {
         return container;
     }
 
-    private static Map<String, Object> consumerProps() {
+    static Map<String, Object> consumerProps() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "group");
@@ -93,7 +93,7 @@ public class PlainJavaSpringExample {
         return template;
     }
 
-    private static Map<String, Object> senderProps() {
+    static Map<String, Object> senderProps() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ProducerConfig.RETRIES_CONFIG, 0);
