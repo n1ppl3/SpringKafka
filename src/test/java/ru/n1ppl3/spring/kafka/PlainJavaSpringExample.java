@@ -9,6 +9,7 @@ import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -36,6 +37,8 @@ public class PlainJavaSpringExample {
         final CountDownLatch latch = new CountDownLatch(4);
 
         ContainerProperties containerProps = new ContainerProperties("topic1", "topic2");
+        containerProps.setSyncCommits(true);
+        containerProps.setLogContainerConfig(true);
         containerProps.setMessageListener(new MessageListener<Integer, String>() {
             @Override
             public void onMessage(ConsumerRecord<Integer, String> message) {
@@ -45,7 +48,6 @@ public class PlainJavaSpringExample {
         });
 
         KafkaMessageListenerContainer<Integer, String> container = createContainer(containerProps);
-        container.setBeanName("testAuto");
         container.start();
 
         Thread.sleep(1_000); // wait a bit for the container to start
@@ -67,8 +69,9 @@ public class PlainJavaSpringExample {
 
     private static KafkaMessageListenerContainer<Integer, String> createContainer(ContainerProperties containerProps) {
         Map<String, Object> props = consumerProps();
-        DefaultKafkaConsumerFactory<Integer, String> cf = new DefaultKafkaConsumerFactory<>(props);
+        ConsumerFactory<Integer, String> cf = new DefaultKafkaConsumerFactory<>(props);
         KafkaMessageListenerContainer<Integer, String> container = new KafkaMessageListenerContainer<>(cf, containerProps);
+        container.setBeanName("testAuto");
         return container;
     }
 
@@ -86,7 +89,7 @@ public class PlainJavaSpringExample {
 
     // producer
 
-    private KafkaTemplate<Integer, String> createTemplate() {
+    private static KafkaTemplate<Integer, String> createTemplate() {
         Map<String, Object> senderProps = senderProps();
         ProducerFactory<Integer, String> pf = new DefaultKafkaProducerFactory<>(senderProps);
         KafkaTemplate<Integer, String> template = new KafkaTemplate<>(pf);
@@ -99,7 +102,7 @@ public class PlainJavaSpringExample {
         props.put(ProducerConfig.RETRIES_CONFIG, 0);
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
         props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 32*1024*1024);
+        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 32 * 1024 * 1024);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return props;

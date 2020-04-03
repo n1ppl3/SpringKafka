@@ -15,6 +15,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.concurrent.CountDownLatch;
@@ -26,6 +27,7 @@ import static ru.n1ppl3.spring.kafka.PlainJavaSpringExample.senderProps;
 
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = {JavaConfigurationExample.Config.class})
+@TestPropertySource(properties = {"my.listener.id=my-cool-listener-id"})
 public class JavaConfigurationExample {
 
     @EnableKafka
@@ -35,9 +37,10 @@ public class JavaConfigurationExample {
         // consumer
 
         @Bean
-        ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaListenerContainerFactory() {
+        public ConcurrentKafkaListenerContainerFactory<Integer, String> kafkaListenerContainerFactory() {
             ConcurrentKafkaListenerContainerFactory<Integer, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
             factory.setConsumerFactory(consumerFactory());
+            factory.setConcurrency(2);
             return factory;
         }
 
@@ -81,7 +84,7 @@ public class JavaConfigurationExample {
 
         private final CountDownLatch latch1 = new CountDownLatch(1);
 
-        @KafkaListener(id = "foo", topics = "annotated1")
+        @KafkaListener(id = "${my.listener.id}", topics = "annotated1")
         public void listen1(String foo) {
             logger.info("received {}", foo);
             latch1.countDown();
