@@ -1,20 +1,22 @@
 package ru.n1ppl3.spring.kafka;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.serialization.StringSerializer;
-
-import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
@@ -25,8 +27,13 @@ public class MyKafkaProducer {
 
 	private static Producer<String, String> myProducer() {
 		Properties props = new Properties();
-		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		// props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 		// props.put(ProducerConfig.ACKS_CONFIG, "all");
+		try {
+			props = PropertiesLoaderUtils.loadProperties(new ClassPathResource("producer.properties"));
+		} catch (IOException e) {
+			throw new KafkaException("failed to load properties", e);
+		}
 
 		return new KafkaProducer<>(props, new StringSerializer(), new StringSerializer());
 	}
